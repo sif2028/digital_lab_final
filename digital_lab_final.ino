@@ -123,7 +123,7 @@ int getVelocity() {
 }
 
 void onRelease(int val) {
-  if(val >= 60) {
+  if(val >= 48) {
     if(digitalRead(modeSwitchPin) == HIGH) {
       usbMIDI.sendNoteOff(val + (12 * keyboardOctaveModifierTempArray[val - 48]), 0, 1);
     }    
