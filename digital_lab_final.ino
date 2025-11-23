@@ -101,7 +101,7 @@ void sequence() {
 }
 
 void onPress(int val) {
-  if(val >= 60) {
+  if(val >= 48) {
     if(digitalRead(modeSwitchPin) == HIGH) {
       usbMIDI.sendNoteOn(val + (12 * keyboardOctaveModifier), getVelocity(), 1);
       keyboardOctaveModifierTempArray[val - 48] = keyboardOctaveModifier;
