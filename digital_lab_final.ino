@@ -17,7 +17,7 @@ int currentStep = 0;
 int totalSteps = 16;
 int channelDisplayed = -1;
 
-//are these arrays too big for the default (or maybe even maximum) memory allocation tp the Teensy?
+//are these arrays too big for the default (or maybe even maximum) memory allocation to the Teensy?
 int velocityAtSteps[25][16];
 int keyboardOctaveModifierAtSteps[25][16];
 
