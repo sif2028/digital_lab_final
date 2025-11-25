@@ -70,13 +70,8 @@ void loop() {
   for(int i = 0; i < 25; i++) {
     keys[i]->process();
   }
+  checkAllPixels();
   if(digitalRead(modeSwitchPin) == LOW) {
-
-    // if this block of code works, delete checkPixels(). otherwise, replace it with checkPixels().
-    for(int i = 0; i < 15; i++) {
-      checkPixel(i);
-    }
-
     sequence();
   } 
 }
@@ -148,40 +143,49 @@ void previousStep() {
   }
 }
 
-void checkPixels() {
-  for(int i = 0; i < 15; i++) {
-    if(currentStep == i) {
-      if(channelDisplayed >= 0) {
-        if(velocityAtSteps[channelDisplayed][i] >= 0) {
-          sequencerKeypad.pixels.setPixelColor(i, Adafruit_NeoPixel::ColorHSV(map(velocityAtSteps[channelDisplayed][i], 0, 127, 0, 54592), 255, 255));
-        }   
-      }
-      else {
-        sequencerKeypad.pixels.setPixelColor(i, 255, 255, 255);
-      }
-      sequencerKeypad.pixels.show();
+void checkAllPixels() {
+  if(digitalRead(modeSwitchPin) == HIGH) {
+    int currentKeyboardVelocity = getVelocity();
+    for(int i = 0; i < 16; i++) {
+      sequencerKeypad.pixels.setPixelColor(i, Adafruit_NeoPixel::ColorHSV(map(currentKeyboardVelocity, 0, 127, 0, 54592), 255, 87));
     }
-    else if(velocityAtSteps[channelDisplayed][i] >= 0) {
-      sequencerKeypad.pixels.setPixelColor(i, Adafruit_NeoPixel::ColorHSV(map(velocityAtSteps[channelDisplayed][i], 0, 127, 0, 54592), 255, 87));
-      sequencerKeypad.pixels.show();
-    }
-    else{
-      boolean anyNoteAtStep = false;
-      for(int j = 0; j < 25; j++) {
-        if(velocityAtSteps[j][i] >= 0 && keyboardOctaveModifierAtSteps[j][i] >= -4) {
-          anyNoteAtStep = true;
-          break;
+    sequencerKeypad.pixels.show();
+  }
+  else {
+    for(int i = 0; i < 16; i++) {
+      if(currentStep == i) {
+        if(channelDisplayed >= 0) {
+          if(velocityAtSteps[channelDisplayed][i] >= 0) {
+            sequencerKeypad.pixels.setPixelColor(i, Adafruit_NeoPixel::ColorHSV(map(velocityAtSteps[channelDisplayed][i], 0, 127, 0, 54592), 255, 255));
+          }   
         }
+        else {
+          sequencerKeypad.pixels.setPixelColor(i, 255, 255, 255);
+        }
+        sequencerKeypad.pixels.show();
       }
-      if(anyNoteAtStep) {
-        sequencerKeypad.pixels.setPixelColor(i, 87, 87, 87);
+      else if(velocityAtSteps[channelDisplayed][i] >= 0) {
+        sequencerKeypad.pixels.setPixelColor(i, Adafruit_NeoPixel::ColorHSV(map(velocityAtSteps[channelDisplayed][i], 0, 127, 0, 54592), 255, 87));
+        sequencerKeypad.pixels.show();
       }
       else {
-        sequencerKeypad.pixels.setPixelColor(i, 0, 0, 0);
-      } 
-      sequencerKeypad.pixels.show();
+        boolean anyNoteAtStep = false;
+        for(int j = 0; j < 25; j++) {
+          if(velocityAtSteps[j][i] >= 0 && keyboardOctaveModifierAtSteps[j][i] >= -4) {
+            anyNoteAtStep = true;
+            break;
+          }
+        }
+        if(anyNoteAtStep) {
+          sequencerKeypad.pixels.setPixelColor(i, 87, 87, 87);
+        }
+        else {
+          sequencerKeypad.pixels.setPixelColor(i, 0, 0, 0);
+        } 
+        sequencerKeypad.pixels.show();
+      }
     }
-  } 
+  }
 }
 
 void checkPixel(int i) {
